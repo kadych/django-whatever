@@ -3,6 +3,9 @@
 """
 Values generators for common Django Fields
 """
+import django
+is_django_gte_1_8 = django.VERSION[0] == 1 and django.VERSION[1] >= 8
+
 from django.contrib.contenttypes.models import ContentType
 import re, os, random
 from decimal import Decimal
@@ -16,7 +19,11 @@ from django.core import validators
 from django.db import models, IntegrityError
 from django.db.models import Q
 from django.db.models.fields.files import FieldFile
-from django.contrib.webdesign.lorem_ipsum import paragraphs
+
+if is_django_gte_1_8:
+    from django.utils.lorem_ipsum import paragraphs
+else:
+    from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 from django.core.validators import validate_ipv4_address
 try:
@@ -165,15 +172,15 @@ def any_datetime_field(field, **kwargs):
     """
     USE_TZ = getattr(settings, 'USE_TZ', False)
     from_date = kwargs.get('from_date', datetime(1990, 1, 1))
-    
+
     if USE_TZ:
         from django.utils.timezone import now, get_current_timezone, make_aware
-        
+
         from_date = make_aware(from_date, get_current_timezone())
         to_date = kwargs.get('to_date', now())
-    else:    
+    else:
         to_date = kwargs.get('to_date', datetime.today())
-        
+
     return xunit.any_datetime(from_date=from_date, to_date=to_date)
 
 
@@ -517,10 +524,17 @@ def _fill_model_fields(model, **kwargs):
         else:
             setattr(model, field.name, any_field(field, **fields_args[field.name]))
 
-    # procceed reversed relations
-    onetoone = [(relation.var_name, relation.field) \
-                for relation in model._meta.get_all_related_objects() \
-                if relation.field.unique] # TODO and not relation.field.rel.parent_link ??
+    # TODO dunno what I did here but seems like it works (I hope)
+    if is_django_gte_1_8:
+        onetoone = [(relation.name, relation)
+                    for relation in model._meta.get_fields()
+                    if relation.one_to_one and relation.auto_created]
+    else:
+        # procceed reversed relations
+        onetoone = [(relation.var_name, relation.field) \
+                    for relation in model._meta.get_all_related_objects() \
+                    if relation.field.unique] # TODO and not relation.field.rel.parent_link ??
+
     for field_name, field in onetoone:
         if field_name in model_fields:
             # TODO support any_model call

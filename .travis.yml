@@ -1,9 +1,11 @@
 language: python
 python:
-  - "2.5"
-  - "2.6"
   - "2.7"
-# command to install dependencies
-install: pip install -r tests/requirements.pip --use-mirrors
-# command to run tests
-script: python tests/manage.py test
+env:
+  - DJANGO="Django==1.7" DB=mysql
+  - DJANGO="Django==1.8" DB=mysql
+install:
+  - pip install -U $DJANGO
+  - pip install -r tests/requirements.pip --use-mirrors
+script:
+  - python tests/manage.py test
