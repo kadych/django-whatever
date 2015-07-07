@@ -4,7 +4,6 @@
 Values generators for common Django Fields
 """
 import django
-is_django_gte_1_8 = django.VERSION[0] == 1 and django.VERSION[1] >= 8
 
 from django.contrib.contenttypes.models import ContentType
 import re, os, random
@@ -20,7 +19,7 @@ from django.db import models, IntegrityError
 from django.db.models import Q
 from django.db.models.fields.files import FieldFile
 
-if is_django_gte_1_8:
+if django.VERSION >= (1, 8):
     from django.utils.lorem_ipsum import paragraphs
 else:
     from django.contrib.webdesign.lorem_ipsum import paragraphs
@@ -525,7 +524,7 @@ def _fill_model_fields(model, **kwargs):
             setattr(model, field.name, any_field(field, **fields_args[field.name]))
 
     # TODO dunno what I did here but seems like it works (I hope)
-    if is_django_gte_1_8:
+    if django.VERSION >= (1, 8):
         onetoone = [(relation.name, relation)
                     for relation in model._meta.get_fields()
                     if relation.one_to_one and relation.auto_created]
