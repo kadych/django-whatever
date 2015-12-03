@@ -295,19 +295,20 @@ def any_filepath_field(field, **kwargs):
     return result
 
 
-@any_field.register(models.IPAddressField)
-def any_ipaddress_field(field, **kwargs):
-    """
-    Return random value for IPAddressField
-    >>> result = any_field(models.IPAddressField())
-    >>> type(result)
-    <type 'str'>
-    >>> from django.core.validators import ipv4_re
-    >>> re.match(ipv4_re, result) is not None
-    True
-    """
-    nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in xrange(0, 4)]
-    return ".".join(nums)
+if django.VERSION < (1, 9):
+    @any_field.register(models.IPAddressField)
+    def any_ipaddress_field(field, **kwargs):
+        """
+        Return random value for IPAddressField
+        >>> result = any_field(models.IPAddressField())
+        >>> type(result)
+        <type 'str'>
+        >>> from django.core.validators import ipv4_re
+        >>> re.match(ipv4_re, result) is not None
+        True
+        """
+        nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in xrange(0, 4)]
+        return ".".join(nums)
 
 if validate_ipv6_address:
     @any_field.register(models.GenericIPAddressField)

@@ -6,6 +6,8 @@ Django forms data generators
 """
 import random
 from datetime import date, datetime, time
+
+import django
 from django import forms
 from django.utils import formats
 from django_any import xunit
@@ -240,25 +242,26 @@ def integer_field_data(field, **kwargs):
     return str(xunit.any_int(min_value=min_value, max_value=max_value))
 
 
-@any_form_field.register(forms.IPAddressField)
-def ipaddress_field_data(field, **kwargs):
-    """
-    Return random value for IPAddressField
-    
-    >>> result = any_form_field(forms.IPAddressField())
-    >>> type(result)
-    <type 'str'>
-    >>> from django.core.validators import ipv4_re
-    >>> import re
-    >>> re.match(ipv4_re, result) is not None
-    True
-    """
-    choices = kwargs.get('choices')
-    if choices:
-        return random.choice(choices)
-    else:
-        nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in xrange(0, 4)]
-        return ".".join(nums)
+if django.VERSION < (1, 9):
+    @any_form_field.register(forms.IPAddressField)
+    def ipaddress_field_data(field, **kwargs):
+        """
+        Return random value for IPAddressField
+
+        >>> result = any_form_field(forms.IPAddressField())
+        >>> type(result)
+        <type 'str'>
+        >>> from django.core.validators import ipv4_re
+        >>> import re
+        >>> re.match(ipv4_re, result) is not None
+        True
+        """
+        choices = kwargs.get('choices')
+        if choices:
+            return random.choice(choices)
+        else:
+            nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in xrange(0, 4)]
+            return ".".join(nums)
 
 if validate_ipv6_address:
     @any_form_field.register(forms.GenericIPAddressField)
