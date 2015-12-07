@@ -1,5 +1,6 @@
 # -*- coding: utf-8; mode: django -*-
-from django.conf.urls.defaults import patterns, include
+import django
+from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -29,12 +30,17 @@ def view(request):
 
     return HttpResponse(template.render(context))
 
-
-urlpatterns = patterns('',
-     (r'^admin/', include(admin.site.urls)),
-     (r'^view/', view),
-)
-
+if django.VERSION < (1, 9):
+    from django.conf.urls import patterns, include
+    urlpatterns = patterns('',
+         url(r'^admin/', include(admin.site.urls)),
+         url(r'^view/', view),
+    )
+else:
+    urlpatterns = [
+         url(r'^admin/', admin.site.urls),
+         url(r'^view/', view),
+    ]
 
 class DjangoAnyClient(TestCase):
     urls = 'django_any.tests.test_client'
@@ -43,7 +49,8 @@ class DjangoAnyClient(TestCase):
         self.client = Client()
 
     def test_login_as_super_user(self):
-        self.assertTrue(self.client.login_as(is_superuser=True))
+        # TODO make test page which will not require is_staff like /admin
+        self.assertTrue(self.client.login_as(is_superuser=True, is_staff=True))
 
         response = self.client.get('/admin/')
         self.assertEquals(200, response.status_code)
@@ -59,4 +66,3 @@ class DjangoAnyClient(TestCase):
     def test_post_any_data(self):
         response = self.client.post_any_data('/view/')
         self.assertRedirects(response, '/view/')
-

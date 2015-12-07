@@ -5,7 +5,7 @@ Models that have custom validation checks
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.test import TestCase
-from django_any import any_model
+from django_any.models import any_model
 
 
 class ModelWithConstraint(models.Model):

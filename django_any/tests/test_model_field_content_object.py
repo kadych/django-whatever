@@ -2,11 +2,11 @@
 """
 Test model creation with GenericForeignKey
 """
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.test import TestCase
-from django_any import any_model
+from django_any.models import any_model
 
 
 class RelatedContentModel(models.Model):
@@ -19,7 +19,7 @@ class ModelWithGenericRelation(models.Model):
     tag = models.SlugField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         app_label = 'django_any'

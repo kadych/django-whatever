@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User, Permission, Group
-from django_any import any_model
+from django_any.models import any_model
 
 def any_user(password=None, permissions=[], groups=[], **kwargs):
     """
@@ -8,7 +8,7 @@ def any_user(password=None, permissions=[], groups=[], **kwargs):
 
     Permissions could be a list of permission names
 
-    If not specified, creates active, non superuser 
+    If not specified, creates active, non superuser
     and non staff user
     """
 
@@ -32,7 +32,6 @@ def any_user(password=None, permissions=[], groups=[], **kwargs):
 
     if password:
         user.set_password(password)
-    
+
     user.save()
     return user
-
