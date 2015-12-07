@@ -4,7 +4,7 @@ Shortcuts for onetoone model fields
 """
 from django.db import models
 from django.test import TestCase
-from django_any import any_model
+from django_any.models import any_model
 
 
 class OneToOneRelated(models.Model):

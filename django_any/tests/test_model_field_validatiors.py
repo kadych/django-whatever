@@ -5,7 +5,7 @@ Test model creation with custom field validation
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.test import TestCase
-from django_any import any_model
+from django_any.models import any_model
 
 
 def validate_even(value):

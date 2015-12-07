@@ -344,7 +344,10 @@ if validate_ipv6_address:
             raise Exception('Unexpected validators')
 
         if protocol == 'ipv4':
-            return any_ipaddress_field(field)
+            if django.VERSION < (1, 9):
+                return any_ipaddress_field(field)
+            else:
+                return any_genericipaddress_field(field)
         if protocol == 'ipv6':
             nums = [str(xunit.any_string(hexdigits, min_length=4, max_length=4)) for _ in xrange(0, 8)]
             return ":".join(nums)

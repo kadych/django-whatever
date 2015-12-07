@@ -2,7 +2,7 @@ from os import path
 import codecs
 import os
 from setuptools import setup
-os.environ['DJANGO_SETTINGS_MODULE'] = "tests.settings"
+os.environ['DJANGO_SETTINGS_MODULE'] = "testproject.settings"
 
 read = lambda filepath: codecs.open(filepath, 'r', 'utf-8').read()
 
@@ -33,4 +33,3 @@ setup(
         'Framework :: Django',
     ]
 )
-
