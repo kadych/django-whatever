@@ -303,6 +303,19 @@ def any_filepath_field(field, **kwargs):
     return result
 
 
+if compat.uuid_field_defined:
+    @any_field.register(models.UUIDField)
+    def any_uuid_field(field, **kwargs):
+        """
+        Return random value for UUIDField
+        >>> result = any_field(models.UUIDField())
+        >>> type(result)
+        <class 'uuid.UUID'>
+        """
+        import uuid
+        return uuid.uuid4()
+
+
 if compat.ipaddress_field_defined:
     @any_field.register(models.IPAddressField)
     def any_ipaddress_field(field, **kwargs):
