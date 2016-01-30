@@ -265,6 +265,9 @@ def any_file_field(field, **kwargs):
         upload_to = os.path.dirname(generated_filepath)
     else:
         upload_to = field.upload_to
+    if not field.storage.exists(upload_to):
+        # make a directory, assuming it's on local file system
+        os.makedirs(field.storage.path(upload_to))
     result = get_some_file(upload_to)
 
     if result is None and not field.blank:
