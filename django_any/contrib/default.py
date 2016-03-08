@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from inspect import isfunction, ismethod
+import django
 from django.db.models.fields import NOT_PROVIDED
 from django.db.models.fields.related import ForeignKey, OneToOneField
 from django_any.models import any_model
@@ -15,10 +16,9 @@ def any_model_with_defaults(cls, **attrs):
                 # for stuff like default=datetime.now
                 default = default()
             if isinstance(field, (ForeignKey, OneToOneField)):
-                # attribute was renamed in django 1.9
-                try:
+                if django.VERSION >= (1, 9):
                     Model = field.target_field.model
-                except AttributeError:
+                else:
                     Model = field.related_field.model
                 if not isinstance(default, Model):
                     try:
