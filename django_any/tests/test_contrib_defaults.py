@@ -6,8 +6,6 @@ import datetime
 from decimal import Decimal
 from django_any.contrib.default import any_model_with_defaults
 from django.db.models.fields import NOT_PROVIDED
-from django.core.files.base import ContentFile
-from django_any.tests.test_model_creation_simple import SimpleModel
 
 
 class SimpleModelWithDefaults(models.Model):
@@ -32,6 +30,19 @@ class SimpleModelWithDefaults(models.Model):
     text_field = models.TextField(default='Lorem ipsum')
     time_field = models.TimeField(default=datetime.time(hour=11, minute=14))
     url_field = models.URLField(default='http://yandex.ru')
+
+    class Meta:
+        app_label = 'django_any'
+
+
+class TargetModel(models.Model):
+    class Meta:
+        app_label = 'django_any'
+
+
+class RelationshipModelsWithDefaults(models.Model):
+    fk = models.ForeignKey(TargetModel, default=1, related_name='related_fk')
+    o2o = models.OneToOneField(TargetModel, default=1, related_name='related_o2o')
 
     class Meta:
         app_label = 'django_any'
@@ -79,3 +90,19 @@ class AnyModelWithDefaults(TestCase):
         for field, original_field in zip(result._meta.fields, SimpleModelWithDefaults._meta.local_fields):
             self.assertNotEqual(original_field.default, getattr(result, field.name))
 
+    def test_related_fields_instances(self):
+        default_target = TargetModel.objects.create()
+
+        standard = RelationshipModelsWithDefaults.objects.create()
+        self.assertEqual(standard.fk, default_target)
+        self.assertEqual(standard.o2o, default_target)
+        standard.delete()  # release o2o field
+
+        try:
+            test = any_model_with_defaults(RelationshipModelsWithDefaults)
+            self.assertEqual(test.fk, default_target)
+            self.assertEqual(test.o2o, default_target)
+        except ValueError:
+            raise AssertionError(
+                '`any_model_with_defaults` must provide models instances '
+                'instead of raw values for related fields with defaults.')
