@@ -252,11 +252,11 @@ def any_file_field(field, **kwargs):
 
         if files:
             result_file = random.choice(files)
-            instance = field.storage.open("%s/%s" % (path, result_file)).file
+            instance = field.storage.open(os.path.join(path, result_file)).file
             return FieldFile(instance, field, result_file)
 
         for subdir in subdirs:
-            result = get_some_file("%s/%s" % (path, subdir))
+            result = get_some_file(os.path.join(path, subdir))
             if result:
                 return result
 
