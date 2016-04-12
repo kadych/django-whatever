@@ -259,7 +259,7 @@ def any_file_field(field, **kwargs):
         upload_to = field.upload_to
     result = get_some_file(upload_to)
 
-    if result is None and not field.null:
+    if result is None and not field.blank:
         raise TypeError("Can't found file in %s for non nullable FileField" % field.upload_to)
     return result
 
