@@ -26,7 +26,7 @@ def view(request):
         form = TestForm()
 
     template = Template("{{ form }}")
-    context = Context({'form' : form})
+    context = Context({'form': form})
 
     return HttpResponse(template.render(context))
 

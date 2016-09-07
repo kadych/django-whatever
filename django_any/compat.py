@@ -32,8 +32,15 @@ def get_model_private_fields(model):
         return model._meta.virtual_fields
 
 
-def get_related_field_model(field):
+def get_remote_field(field):
     if django.VERSION >= (1, 9):
-        return field.target_field.model
+        return field.remote_field
     else:
-        return field.related_field.model
+        return field.target_field
+
+
+def get_remote_field_model(field):
+    if django.VERSION >= (1, 9):
+        return field.remote_field.model
+    else:
+        return field.target_field.model

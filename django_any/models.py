@@ -478,12 +478,12 @@ def any_time_field(field, **kwargs):
 
 @any_field.register(models.ForeignKey)
 def any_foreignkey_field(field, **kwargs):
-    return any_model(field.rel.to, **kwargs)
+    return any_model(compat.get_remote_field_model(field), **kwargs)
 
 
 @any_field.register(models.OneToOneField)
 def any_onetoone_field(field, **kwargs):
-    return any_model(field.rel.to, **kwargs)
+    return any_model(compat.get_remote_field_model(field), **kwargs)
 
 
 def _fill_model_fields(model, **kwargs):
@@ -503,12 +503,12 @@ def _fill_model_fields(model, **kwargs):
                 Lookup ForeingKey field in db
                 """
                 key_field = model._meta.get_field(field.name)
-                value = key_field.rel.to.objects.get(kwargs[field.name])
+                value = compat.get_remote_field_model(key_field).objects.get(kwargs[field.name])
                 setattr(model, field.name, value)
             else:
                 # TODO support any_model call
                 setattr(model, field.name, kwargs[field.name])
-        elif isinstance(field, models.OneToOneField) and field.rel.parent_link:
+        elif isinstance(field, models.OneToOneField) and compat.get_remote_field(field).parent_link:
             """
             skip link to parent instance
             """
@@ -516,7 +516,7 @@ def _fill_model_fields(model, **kwargs):
             """
             skip primary key field
             """
-        elif isinstance(field, models.fields.related.ForeignKey) and field.model == field.rel.to:
+        elif isinstance(field, models.fields.related.ForeignKey) and field.model == compat.get_remote_field_model(field):
             """
             skip self relations
             """

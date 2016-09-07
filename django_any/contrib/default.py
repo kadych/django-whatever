@@ -17,7 +17,7 @@ def any_model_with_defaults(cls, **attrs):
                 # for stuff like default=datetime.now
                 default = default()
             if isinstance(field, (ForeignKey, OneToOneField)):
-                Model = compat.get_related_field_model(field)
+                Model = compat.get_remote_field_model(field)
                 if not isinstance(default, Model):
                     try:
                         default = Model.objects.get(pk=default)
