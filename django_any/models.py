@@ -14,7 +14,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_ipv4_address
 from django.contrib.contenttypes.models import ContentType
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
 from django.db.models import Q
 from django.db.models.fields.files import FieldFile
 
@@ -536,11 +536,12 @@ def any_model_default(model_cls, **kwargs):
     attempts = 10
     while True:
         try:
-            _fill_model_fields(result, **kwargs)
-            result.full_clean()
-            result.save()
-            return result
-        except (IntegrityError, ValidationError):
+            with transaction.atomic():
+                _fill_model_fields(result, **kwargs)
+                result.full_clean()
+                result.save()
+                return result
+        except (IntegrityError, ValidationError) as ex:
             attempts -= 1
             if not attempts:
                 raise
