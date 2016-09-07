@@ -36,11 +36,11 @@ def get_remote_field(field):
     if django.VERSION >= (1, 9):
         return field.remote_field
     else:
-        return field.target_field
+        return field.rel
 
 
 def get_remote_field_model(field):
     if django.VERSION >= (1, 9):
         return field.remote_field.model
     else:
-        return field.target_field.model
+        return field.rel.to
