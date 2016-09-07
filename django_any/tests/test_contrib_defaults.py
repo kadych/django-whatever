@@ -1,11 +1,13 @@
 # -*- coding: utf-8; -*-
-import django
-from django.db import models
-from django.test import TestCase
 import datetime
 from decimal import Decimal
-from django_any.contrib.default import any_model_with_defaults
+
+from django.db import models
+from django.test import TestCase
 from django.db.models.fields import NOT_PROVIDED
+
+from django_any import compat
+from django_any.contrib.default import any_model_with_defaults
 
 
 class SimpleModelWithDefaults(models.Model):
@@ -19,7 +21,7 @@ class SimpleModelWithDefaults(models.Model):
     email_field = models.EmailField(default='admin@dev.null')
     float_field = models.FloatField(default=0.7)
     integer_field = models.IntegerField(default=42)
-    if django.VERSION < (1, 9):
+    if compat.ipaddress_field_defined:
         ip_field = models.IPAddressField(default='127.0.0.1')
     else:
         ip_field = models.GenericIPAddressField(default='127.0.0.1')

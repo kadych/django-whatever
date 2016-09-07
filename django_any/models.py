@@ -3,9 +3,6 @@
 """
 Values generators for common Django Fields
 """
-import django
-
-from django.contrib.contenttypes.models import ContentType
 import re, os, random
 from decimal import Decimal
 from datetime import date, datetime, time
@@ -13,25 +10,24 @@ from string import ascii_letters, digits, hexdigits
 from random import choice
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core import validators
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_ipv4_address
+from django.contrib.contenttypes.models import ContentType
 from django.db import models, IntegrityError
 from django.db.models import Q
 from django.db.models.fields.files import FieldFile
 
-if django.VERSION >= (1, 8):
-    from django.utils.lorem_ipsum import paragraphs
-else:
-    from django.contrib.webdesign.lorem_ipsum import paragraphs
 
-from django.core.validators import validate_ipv4_address
 try:
     from django.core.validators import validate_ipv6_address, validate_ipv46_address
 except ImportError:
     validate_ipv6_address = None
     validate_ipv46_address = None
 
+from django_any import compat
 from django_any import xunit
+from django_any.compat import paragraphs
 from django_any.functions import valid_choices, split_model_kwargs, ExtensionMethod
 
 any_field = ExtensionMethod()
@@ -295,7 +291,7 @@ def any_filepath_field(field, **kwargs):
     return result
 
 
-if django.VERSION < (1, 9):
+if compat.ipaddress_field_defined:
     @any_field.register(models.IPAddressField)
     def any_ipaddress_field(field, **kwargs):
         """
@@ -344,7 +340,7 @@ if validate_ipv6_address:
             raise Exception('Unexpected validators')
 
         if protocol == 'ipv4':
-            if django.VERSION < (1, 9):
+            if compat.ipaddress_field_defined:
                 return any_ipaddress_field(field)
             else:
                 return any_genericipaddress_field(field)
@@ -494,7 +490,7 @@ def _fill_model_fields(model, **kwargs):
     model_fields, fields_args = split_model_kwargs(kwargs)
 
     # fill virtual fields
-    for field in model._meta.virtual_fields:
+    for field in compat.get_model_private_fields(model):
         if field.name in model_fields:
             object = kwargs[field.name]
             model_fields[field.ct_field] = kwargs[field.ct_field]= ContentType.objects.get_for_model(object)
@@ -527,18 +523,7 @@ def _fill_model_fields(model, **kwargs):
         else:
             setattr(model, field.name, any_field(field, **fields_args[field.name]))
 
-    # TODO dunno what I did here but seems like it works (I hope)
-    if django.VERSION >= (1, 8):
-        onetoone = [(relation.name, relation)
-                    for relation in model._meta.get_fields()
-                    if relation.one_to_one and relation.auto_created]
-    else:
-        # procceed reversed relations
-        onetoone = [(relation.var_name, relation.field) \
-                    for relation in model._meta.get_all_related_objects() \
-                    if relation.field.unique] # TODO and not relation.field.rel.parent_link ??
-
-    for field_name, field in onetoone:
+    for field_name, field in compat.get_model_onetoone_fields(model):
         if field_name in model_fields:
             # TODO support any_model call
             setattr(model, field_name, kwargs[field_name])

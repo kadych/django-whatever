@@ -7,9 +7,10 @@ Django forms data generators
 import random
 from datetime import date, datetime, time
 
-import django
 from django import forms
 from django.utils import formats
+
+from django_any import compat
 from django_any import xunit
 from django_any.functions import valid_choices, split_model_kwargs, \
     ExtensionMethod
@@ -242,7 +243,7 @@ def integer_field_data(field, **kwargs):
     return str(xunit.any_int(min_value=min_value, max_value=max_value))
 
 
-if django.VERSION < (1, 9):
+if compat.ipaddress_field_defined:
     @any_form_field.register(forms.IPAddressField)
     def ipaddress_field_data(field, **kwargs):
         """

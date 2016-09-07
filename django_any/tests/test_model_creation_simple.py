@@ -5,7 +5,10 @@ Create models will all fields with simply to generate values
 import django
 from django.db import models
 from django.test import TestCase
+
+from django_any import compat
 from django_any.models import any_model
+
 
 class SimpleModel(models.Model):
     big_integer_field = models.BigIntegerField()
@@ -18,7 +21,7 @@ class SimpleModel(models.Model):
     email_field = models.EmailField()
     float_field = models.FloatField()
     integer_field = models.IntegerField()
-    if django.VERSION < (1, 9):
+    if compat.ipaddress_field_defined:
         ip_field = models.IPAddressField()
     else:
         ip_field = models.GenericIPAddressField()
