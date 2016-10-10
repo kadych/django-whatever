@@ -3,8 +3,10 @@ import django
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, override_settings
+
 from django_any.test import Client
+
 
 def view(request):
     """
@@ -42,9 +44,9 @@ else:
          url(r'^view/', view),
     ]
 
-class DjangoAnyClient(TestCase):
-    urls = 'django_any.tests.test_client'
 
+@override_settings(ROOT_URLCONF='django_any.tests.test_client')
+class DjangoAnyClient(TestCase):
     def setUp(self):
         self.client = Client()
 
