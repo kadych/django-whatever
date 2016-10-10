@@ -36,14 +36,22 @@ any_model = ExtensionMethod(by_instance=True)
 @any_field.decorator
 def any_field_blank(function):
     """
-    Sometimes return None if field could be blank
+    Sometimes return empty value if field could be blank
     """
     def wrapper(field, **kwargs):
+        # any_model(Entry, pub_date__isnull=True)
         if kwargs.get('isnull', False):
             return None
 
         if field.blank and random.random() < 0.1:
-            return None
+            if field.null:
+                return None
+            else:
+                try:
+                    return field.to_python('')
+                except ValidationError as e:  # bool, int, etc.
+                    pass
+
         return function(field, **kwargs)
     return wrapper
 
