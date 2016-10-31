@@ -69,7 +69,9 @@ def field_choices_attibute(function):
     """
     def _wrapper(field, **kwargs):
         if hasattr(field.widget, 'choices'):
-            return random.choice(list(valid_choices(field.widget.choices)))
+            valid_only = list(valid_choices(field.widget.choices))
+            if valid_only:
+                return random.choice(valid_only)
         return function(field, **kwargs)
 
     return _wrapper
