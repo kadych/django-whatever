@@ -41,7 +41,13 @@ def any_form_default(form_cls, **kwargs):
         if name in form_fields:
             form_data[name] = kwargs[name]
         else:
-            form_data[name] = any_form_field(field, **fields_args[name])
+            try:
+                form_field_data = any_form_field(field, **fields_args[name])
+            except Exception as e:
+                if field.required:
+                    raise
+            else:
+                form_data[name] = form_field_data
 
     return form_data, form_files
 
