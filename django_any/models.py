@@ -216,9 +216,7 @@ def any_email_field(field, **kwargs):
     >>> re.match(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)", result, re.IGNORECASE) is not None
     True
     """
-    return "%s@%s.%s" % (xunit.any_string(max_length=10),
-                         xunit.any_string(max_length=10),
-                         xunit.any_string(min_length=2, max_length=3))
+    return xunit.any_email()
 
 
 @any_field.register(models.FloatField)
