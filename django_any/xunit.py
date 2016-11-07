@@ -2,6 +2,7 @@
 """
 The python basic types generators
 """
+import re
 import random
 from string import ascii_letters
 from datetime import date, datetime, timedelta
@@ -146,3 +147,17 @@ def any_decimal(min_value=Decimal(0), max_value=Decimal('99.99'), decimal_places
                                  max_value=float(max_value),
                                  precision=decimal_places)))
 
+
+def any_email():
+    """
+    Return random email
+
+    >>> result = any_email()
+    >>> type(result)
+    <type 'str'>
+    >>> re.match(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)", result, re.IGNORECASE) is not None
+    True
+    """
+    return "%s@%s.%s" % (any_string(max_length=10),
+                         any_string(max_length=10),
+                         any_string(min_length=2, max_length=3))
