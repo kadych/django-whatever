@@ -8,6 +8,7 @@ from string import ascii_letters
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
+
 def weighted_choice(choices):
     """
     Supposes that choices is sequence of two elements items,

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import time, random
+import random
+import time
 
 try:
     from unittest import _strclass
 except ImportError:
     _strclass = str
 
+import six
 from django import forms
 from django_any import any_form
 from django.test.client import Client as DjangoClient
@@ -16,7 +18,7 @@ from django_any import xunit
 
 def _context_keys_iterator(context):
     for container_or_key in context:
-        if isinstance(container_or_key, basestring):
+        if isinstance(container_or_key, six.string_types):
             yield container_or_key
         else:
             for key in _context_keys_iterator(container_or_key):

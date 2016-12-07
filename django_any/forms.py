@@ -4,18 +4,20 @@
 Django forms data generators
 
 """
+from __future__ import division
 import random
 from datetime import date, datetime, time
+from string import hexdigits
 
+import six
 from django import forms
+from django.core.validators import validate_ipv4_address
 from django.utils import formats
 
 from django_any import compat
 from django_any import xunit
 from django_any.functions import valid_choices, split_model_kwargs, \
     ExtensionMethod
-from django.core.validators import validate_ipv4_address
-from string import hexdigits
 
 try:
     from django.core.validators import validate_ipv6_address, validate_ipv46_address
@@ -37,7 +39,7 @@ def any_form_default(form_cls, **kwargs):
 
     form_fields, fields_args = split_model_kwargs(kwargs)
 
-    for name, field in form_cls.base_fields.iteritems():
+    for name, field in six.iteritems(form_cls.base_fields):
         if name in form_fields:
             form_data[name] = kwargs[name]
         else:
@@ -156,10 +158,10 @@ def email_field_data(field, **kwargs):
     """
     max_length = 10
     if field.max_length:
-        max_length = (field.max_length -5) / 2 
+        max_length = (field.max_length - 5) // 2
     min_length = 10
     if field.min_length:
-        min_length = (field.min_length-4) / 2
+        min_length = (field.min_length - 4) // 2
     return "%s@%s.%s" % (
         xunit.any_string(min_length=min_length, max_length=max_length),
         xunit.any_string(min_length=min_length, max_length=max_length),
@@ -310,7 +312,7 @@ if validate_ipv6_address:
         if protocol == 'ipv4':
             return ipaddress_field_data(field)
         if protocol == 'ipv6':
-            nums = [str(xunit.any_string(hexdigits, min_length=4, max_length=4)) for _ in xrange(0, 8)]
+            nums = [str(xunit.any_string(hexdigits, min_length=4, max_length=4)) for _ in six.moves.range(0, 8)]
             return ":".join(nums)
 
 
@@ -426,7 +428,7 @@ def multiple_choice_field_data(field, **kwargs):
         random.shuffle(l)
         choices = []
         count = xunit.any_int(min_value=1, max_value=len(field.choices))
-        for i in xrange(0, count):
+        for i in six.moves.range(0, count):
             choices.append(l[i])
         return ' '.join(choices)
     return 'None'
