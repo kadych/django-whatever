@@ -55,7 +55,7 @@ class DjangoAnyClient(TestCase):
         self.assertTrue(self.client.login_as(is_superuser=True, is_staff=True))
 
         response = self.client.get('/admin/')
-        self.assertEquals(200, response.status_code)
+        self.assertEqual(200, response.status_code)
 
     def test_login_as_custom_user(self):
         user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')

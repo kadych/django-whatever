@@ -2,9 +2,11 @@
 """
 Test model creation with custom fields
 """
+import six
 from django.db import models
 from django.test import TestCase
 from django_any.models import any_model
+
 
 class MySlugField(models.SlugField):
     pass
@@ -26,4 +28,4 @@ class CustomFieldsTest(TestCase):
         self.assertEqual(len(model._meta.fields), len(ModelWithCustomField._meta.local_fields))
 
         self.assertTrue(model.slug)
-        self.assertTrue(isinstance(model.slug, basestring))
+        self.assertTrue(isinstance(model.slug, six.string_types))

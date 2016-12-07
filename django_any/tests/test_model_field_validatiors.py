@@ -10,7 +10,7 @@ from django_any.models import any_model
 
 def validate_even(value):
     if value % 2 != 0:
-        raise ValidationError(u'%s is not an even number' % value)
+        raise ValidationError('%s is not an even number' % value)
 
 
 class ModelWithValidatedField(models.Model):
