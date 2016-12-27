@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
 """
 The python basic types generators
 """
-import re
+
 import random
 from string import ascii_letters
 from datetime import date, datetime, timedelta
@@ -23,7 +24,7 @@ def weighted_choice(choices):
     i = random.randint(0, total - 1)
     for weight, choice in choices:
         i -= weight
-        if i < 0: 
+        if i < 0:
             if callable(choice):
                 return choice()
             return choice
@@ -33,7 +34,7 @@ def weighted_choice(choices):
 def any_boolean():
     """
     Returns True or False
-    
+
     >>> result = any_boolean()
     >>> type(result)
     <type 'bool'>
@@ -58,7 +59,7 @@ def any_int(min_value=0, max_value=100, **kwargs):
 def any_float(min_value=0, max_value=100, precision=2):
     """
     Returns random float
-    
+
     >>> result = any_float(min_value=0, max_value=100, precision=2)
     >>> type(result)
     <type 'float'>
@@ -69,11 +70,11 @@ def any_float(min_value=0, max_value=100, precision=2):
     return round(random.uniform(min_value, max_value), precision)
 
 
-def any_letter(letters = ascii_letters, **kwargs):
+def any_letter(letters=ascii_letters, **kwargs):
     """
     Return random letter
 
-    >>> result = any_letter(letters = ascii_letters)
+    >>> result = any_letter(letters=ascii_letters)
     >>> type(result)
     <type 'str'>
     >>> len(result)
@@ -85,11 +86,11 @@ def any_letter(letters = ascii_letters, **kwargs):
     return random.choice(letters)
 
 
-def any_string(letters = ascii_letters, min_length=3, max_length=100):
+def any_string(letters=ascii_letters, min_length=3, max_length=100):
     """
     Return string with random content
 
-    >>> result = any_string(letters = ascii_letters, min_length=3, max_length=100)
+    >>> result = any_string(letters=ascii_letters, min_length=3, max_length=100)
     >>> type(result)
     <type 'str'>
     >>> len(result) in range(3,101)
@@ -97,39 +98,49 @@ def any_string(letters = ascii_letters, min_length=3, max_length=100):
     >>> any([c in ascii_letters for c in result])
     True
     """
-    
+
     length = random.randint(min_length, max_length)
     letters = [any_letter(letters=letters) for _ in range(0, length)]
     return "".join(letters)
 
 
-def any_date(from_date=date(1990, 1, 1), to_date=date.today()):
+def any_date(from_date=None, to_date=None):
     """
     Return random date from the [from_date, to_date] interval
 
-    >>> result = any_date(from_date=date(1990,1,1), to_date=date(1990,1,3))
+    :param from_date: default value: date(1990, 1, 1)
+    :param to_date: default value: date.today()
+
+    >>> result = any_date(from_date=date(1990, 1, 1), to_date=date(1990, 1, 3))
     >>> type(result)
     <type 'datetime.date'>
-    >>> result >= date(1990,1,1) and result <= date(1990,1,3)
+    >>> result >= date(1990, 1, 1) and result <= date(1990, 1, 3)
     True
     """
+    from_date = from_date or date(1990, 1, 1)
+    to_date = to_date or date.today()
     days = any_int(min_value=0, max_value=(to_date - from_date).days)
 
     return from_date + timedelta(days=days)
 
 
-def any_datetime(from_date=datetime(1990, 1, 1), to_date=datetime.now()):
+def any_datetime(from_date=None, to_date=None):
     """
     Return random datetime from the [from_date, to_date] interval
 
-    >>> result = any_datetime(from_date=datetime(1990,1,1), to_date=datetime(1990,1,3))
+    :param from_date: default value: datetime(1990, 1, 1)
+    :param to_date: default value: datetime.now()
+
+    >>> result = any_datetime(from_date=datetime(1990, 1, 1), to_date=datetime(1990, 1, 3))
     >>> type(result)
     <type 'datetime.datetime'>
-    >>> result >= datetime(1990,1,1) and result <= datetime(1990,1,3)
+    >>> result >= datetime(1990, 1, 1) and result <= datetime(1990, 1, 3)
     True
     """
-    days = any_int(min_value=0, max_value=(to_date - from_date).days-1)
-    time = timedelta(seconds=any_int(min_value=0, max_value=24*3600-1))
+    from_date = from_date or datetime(1990, 1, 1)
+    to_date = to_date or datetime.now()
+    days = any_int(min_value=0, max_value=(to_date - from_date).days - 1)
+    time = timedelta(seconds=any_int(min_value=0, max_value=24 * 3600 - 1))
 
     return from_date + timedelta(days=days) + time
 
@@ -153,6 +164,7 @@ def any_email():
     """
     Return random email
 
+    >>> import re
     >>> result = any_email()
     >>> type(result)
     <type 'str'>
