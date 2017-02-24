@@ -7,6 +7,7 @@ else:
 
 
 ipaddress_field_defined = django.VERSION < (1, 9)
+uuid_field_defined = django.VERSION >= (1, 8)
 
 
 def get_model_onetoone_fields(model):

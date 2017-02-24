@@ -252,11 +252,11 @@ def any_file_field(field, **kwargs):
 
         if files:
             result_file = random.choice(files)
-            instance = field.storage.open("%s/%s" % (path, result_file)).file
+            instance = field.storage.open(os.path.join(path, result_file)).file
             return FieldFile(instance, field, result_file)
 
         for subdir in subdirs:
-            result = get_some_file("%s/%s" % (path, subdir))
+            result = get_some_file(os.path.join(path, subdir))
             if result:
                 return result
 
@@ -265,6 +265,9 @@ def any_file_field(field, **kwargs):
         upload_to = os.path.dirname(generated_filepath)
     else:
         upload_to = field.upload_to
+    if not field.storage.exists(upload_to):
+        # make a directory, assuming it's on local file system
+        os.makedirs(field.storage.path(upload_to))
     result = get_some_file(upload_to)
 
     if result is None and not field.blank:
@@ -301,6 +304,19 @@ def any_filepath_field(field, **kwargs):
     if result is None and not field.null:
         raise TypeError("Can't found file in %s for non nullable FilePathField" % field.path)
     return result
+
+
+if compat.uuid_field_defined:
+    @any_field.register(models.UUIDField)
+    def any_uuid_field(field, **kwargs):
+        """
+        Return random value for UUIDField
+        >>> result = any_field(models.UUIDField())
+        >>> type(result)
+        <class 'uuid.UUID'>
+        """
+        import uuid
+        return uuid.uuid4()
 
 
 if compat.ipaddress_field_defined:
