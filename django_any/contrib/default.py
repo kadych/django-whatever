@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from inspect import isfunction, ismethod
 from django.db.models.fields import NOT_PROVIDED
 from django.db.models.fields.related import ForeignKey, OneToOneField
 
@@ -13,7 +12,7 @@ def any_model_with_defaults(cls, **attrs):
     for field in cls._meta.fields:
         default = field.default
         if default is not NOT_PROVIDED:
-            if isfunction(default) or ismethod(default):
+            if callable(default):
                 # for stuff like default=datetime.now
                 default = default()
             if isinstance(field, (ForeignKey, OneToOneField)):
