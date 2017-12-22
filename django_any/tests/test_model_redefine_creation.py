@@ -12,7 +12,7 @@ class Redefined(models.Model):
 
 
 class RelatedToRedefined(models.Model):
-    related = models.ForeignKey(Redefined)
+    related = models.ForeignKey(Redefined, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'django_any'

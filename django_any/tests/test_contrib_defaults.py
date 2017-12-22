@@ -14,7 +14,7 @@ class SimpleModelWithDefaults(models.Model):
     big_integer_field = models.BigIntegerField(default=8223372036854775807)
     char_field = models.CharField(max_length=5, default='USSR')
     boolean_field = models.BooleanField(default=True)
-    comma_separated_field = models.CommaSeparatedIntegerField(max_length=50, default='1,2,3')
+    comma_separated_field = compat.CommaSeparatedIntegerField(max_length=50, default='1,2,3')
     date_field = models.DateField(default=datetime.date(2010, 12, 10))
     datetime_field = models.DateTimeField(datetime.datetime.now)
     decimal_field = models.DecimalField(decimal_places=2, max_digits=10, default=Decimal('0.5'))
@@ -43,8 +43,8 @@ class TargetModel(models.Model):
 
 
 class RelationshipModelsWithDefaults(models.Model):
-    fk = models.ForeignKey(TargetModel, default=1, related_name='related_fk')
-    o2o = models.OneToOneField(TargetModel, default=1, related_name='related_o2o')
+    fk = models.ForeignKey(TargetModel, on_delete=models.CASCADE, default=1, related_name='related_fk')
+    o2o = models.OneToOneField(TargetModel, on_delete=models.CASCADE, default=1, related_name='related_o2o')
 
     class Meta:
         app_label = 'django_any'

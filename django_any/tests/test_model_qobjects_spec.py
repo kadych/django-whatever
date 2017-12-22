@@ -14,7 +14,7 @@ class QObjectRelated(models.Model):
 
 
 class RelatedToQObject(models.Model):
-    related = models.ForeignKey(QObjectRelated)
+    related = models.ForeignKey(QObjectRelated, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'django_any'

@@ -271,7 +271,7 @@ if compat.ipaddress_field_defined:
         if choices:
             return random.choice(choices)
         else:
-            nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in xrange(0, 4)]
+            nums = [str(xunit.any_int(min_value=0, max_value=255)) for _ in range(0, 4)]
             return ".".join(nums)
 
 if validate_ipv6_address:

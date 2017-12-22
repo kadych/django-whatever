@@ -24,7 +24,7 @@ class ModelWithConstraint(models.Model):
 
 
 class ModelWithConstraintOnForeignKey(models.Model):
-    timestamp = models.ForeignKey(ModelWithConstraint)
+    timestamp = models.ForeignKey(ModelWithConstraint, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'django_any'
@@ -36,6 +36,6 @@ class PassModelValidation(TestCase):
         self.assertTrue(result.start_time <= result.end_time)
 
     def test_foreignkey_constraint_succeed(self):
-        result = any_model(ModelWithConstraintOnForeignKey)
+        result = any_model(ModelWithConstraintOnForeignKey, on_delete=models.CASCADE)
         self.assertTrue(result.timestamp.start_time <= result.timestamp.end_time)
 
