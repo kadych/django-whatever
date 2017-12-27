@@ -16,7 +16,7 @@ class OneToOneRelated(models.Model):
 
 class ModelWithOneToOneField(models.Model):
     name = models.CharField(max_length=5)
-    related = models.OneToOneField(OneToOneRelated)
+    related = models.OneToOneField(OneToOneRelated, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'django_any'

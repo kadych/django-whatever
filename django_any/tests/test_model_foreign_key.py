@@ -15,7 +15,7 @@ class RelatedModel(models.Model):
 
 
 class BaseModel(models.Model):
-    related = models.ForeignKey(RelatedModel)
+    related = models.ForeignKey(RelatedModel, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'django_any'
@@ -23,7 +23,7 @@ class BaseModel(models.Model):
 
 class SelfReferencingModel(models.Model):
     name = models.CharField(max_length=5)
-    parent = models.ForeignKey('self', null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         app_label = 'django_any'

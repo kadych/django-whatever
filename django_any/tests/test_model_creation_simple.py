@@ -2,7 +2,6 @@
 """
 Create models will all fields with simply to generate values
 """
-import django
 from django.db import models
 from django.test import TestCase
 
@@ -14,7 +13,7 @@ class SimpleModel(models.Model):
     big_integer_field = models.BigIntegerField()
     char_field = models.CharField(max_length=5)
     boolean_field = models.BooleanField()
-    comma_separated_field = models.CommaSeparatedIntegerField(max_length=50)
+    comma_separated_field = compat.CommaSeparatedIntegerField(max_length=50)
     date_field = models.DateField()
     datetime_field = models.DateTimeField()
     decimal_field = models.DecimalField(decimal_places=2, max_digits=10)

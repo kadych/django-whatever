@@ -1,4 +1,6 @@
 import django
+from django.core import validators
+from django.db import models
 
 if django.VERSION >= (1, 8):
     from django.utils.lorem_ipsum import paragraphs
@@ -45,3 +47,10 @@ def get_remote_field_model(field):
         return field.remote_field.model
     else:
         return field.rel.to
+
+
+if django.VERSION < (2, 0):
+    CommaSeparatedIntegerField = models.CommaSeparatedIntegerField
+else:
+    class CommaSeparatedIntegerField(models.CharField):
+        default_validators = [validators.validate_comma_separated_integer_list]

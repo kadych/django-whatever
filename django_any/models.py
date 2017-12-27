@@ -131,6 +131,9 @@ def any_char_field(field, **kwargs):
     >>> type(result)
     <type 'str'>
     """
+    if validators.validate_comma_separated_integer_list in field.validators:
+        return any_commaseparatedinteger_field(field, **kwargs)
+
     min_length = kwargs.get('min_length', 1)
     max_length = kwargs.get('max_length', field.max_length)
     return xunit.any_string(min_length=min_length, max_length=max_length)
