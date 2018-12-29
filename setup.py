@@ -22,9 +22,9 @@ setup(
     install_requires=[
         'six >= 1.10',
     ],
-    setup_requires=[
-        'versiontools >= 1.8',
-    ],
+    #setup_requires=[
+    #    'versiontools >= 1.8',
+    #],
     license='MIT License',
     platforms=['any'],
     classifiers=[
